@@ -99,7 +99,7 @@ final class BudsModelCapabilityTests: XCTestCase {
         XCTAssertEqual(pro.longPressActions, plain.longPressActions)
         XCTAssertTrue(pro.supportsAdaptiveNoiseCancelling)
         XCTAssertFalse(plain.supportsAdaptiveNoiseCancelling)
-        XCTAssertFalse(pro.isTestedOnHardware)
+        XCTAssertTrue(pro.isTestedOnHardware)
     }
 
     func testOnlyBuds8ProSkipsAuthentication() {
@@ -209,9 +209,9 @@ final class BudsModelCapabilityTests: XCTestCase {
         XCTAssertFalse(model.supportsAdaptiveSound || model.supportsAdaptiveNoiseCancelling)
     }
 
-    func testOnlyBuds8IsMarkedHardwareTested() {
+    func testOnlyBuds8AndBuds8ProAreMarkedHardwareTested() {
         for model in BudsModel.all {
-            XCTAssertEqual(model.isTestedOnHardware, model.id == .buds8, "\(model.id)")
+            XCTAssertEqual(model.isTestedOnHardware, [.buds8, .buds8Pro].contains(model.id), "\(model.id)")
         }
     }
 

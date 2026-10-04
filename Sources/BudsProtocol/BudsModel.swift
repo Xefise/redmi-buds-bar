@@ -149,11 +149,11 @@ public struct BudsModel: Equatable, Sendable {
         $0.transparencyStrengths = TransparencyStrength.allCases
     }
 
-    /// Not in Gadgetbridge: assumed to be the Buds 8 capability set plus adaptive noise cancelling
-    /// (the 5 Pro / 6 Pro toggle) and spatial audio. Untested; the strength pickers only show once the
-    /// earbuds report a value. The earbuds never answer the auth challenge, but accept
-    /// commands on the "MIWEAR" channel without it (as a working Linux client for this model does).
-    private static let buds8Pro = eight(.buds8Pro, "REDMI Buds 8 Pro") {
+    /// Not in Gadgetbridge. Tested on hardware with known issues: connection, battery, noise mode, dual connection
+    /// and spatial audio work; the strength, transparency and equalizer tables are inherited from Buds 8 and partly
+    /// wrong (see docs/models/buds-8-pro.md). The earbuds never answer the auth challenge, but accept commands on
+    /// the "MIWEAR" channel without it (as a working Linux client for this model does).
+    private static let buds8Pro = eight(.buds8Pro, "REDMI Buds 8 Pro", tested: true) {
         $0.requiresAuthentication = false
         $0.ambientSoundModes = AmbientSoundMode.allCases
         $0.noiseCancellingStrengths = [.balanced, .light, .deep]

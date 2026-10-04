@@ -1,6 +1,7 @@
 # REDMI Buds 8 Pro
 
-Status: connects and is usable; several value tables are not verified. Not in Gadgetbridge.
+Status: tested on hardware with known issues (marked tested in the model table since 1.1.0); several value
+tables are not verified. Not in Gadgetbridge.
 
 Sources: logs from a user's earbuds (2026-10-04/05) and the source of a third-party Linux client
 ([T0F1Q2007/Redmi-buds-8-pro-linux-software](https://github.com/T0F1Q2007/Redmi-buds-8-pro-linux-software),
@@ -61,5 +62,12 @@ With the third-party table, the user reported on a Mac:
 
 That fits BudsLink's Buds 6 Pro table (`02` off, `03` spatial, `0B` spatial + head tracking): `03` is the
 static spatial mode, and `0B` probably needs head-tracking data from a phone, which a Mac never sends. `0A`
-is unexplained. The app now offers Off (`02`) / Spatial (`03`); next: confirm by ear that `02` differs from
-`03`.
+is unexplained. The app now offers Off (`02`) / Spatial (`03`). Confirmed by ear: Off and Spatial differ, and
+Spatial sounds like Dolby Audio; which firmware mode it is remains unknown.
+
+## Phone side
+
+While the Mac app was connected, the phone app could not configure the earbuds, the phone at one point stopped
+finding them (re-pairing needed), and the earbuds would not stay connected to Mac and phone at once even with
+dual connection on. The app never wrote config `04` in these sessions. Run info contains `07 00 <addr>` and
+`07 01 <addr>` with the same address, possibly the connected-hosts list.
