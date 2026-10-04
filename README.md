@@ -4,6 +4,10 @@ A macOS menu bar app for Xiaomi **REDMI Buds** earbuds. It shows battery levels 
 the noise mode, and exposes the settings your model supports: equalizer presets, custom equalizer curves,
 gestures, find my earbuds and more. It lives only in the menu bar (no Dock icon).
 
+> **Personal fork.** This is a fork of [ChristianVeneko/redmi-buds-bar](https://github.com/ChristianVeneko/redmi-buds-bar),
+> mainly to add REDMI Buds 8 Pro support for my own use. It is not actively maintained: issues and pull
+> requests may go unanswered. For the original project, see the upstream repository.
+
 ![Screenshot](docs/screenshot.png)
 
 <!-- Screenshot placeholder: add docs/screenshot.png -->
@@ -18,7 +22,7 @@ to a minimal set (battery and noise mode).
 | --- | --- |
 | REDMI Buds 8 | Tested on hardware |
 | REDMI Buds 8 Active | Untested (protocol shared with Gadgetbridge) |
-| REDMI Buds 8 Pro | Untested (not in Gadgetbridge; assumed Buds 8 + adaptive ANC) |
+| REDMI Buds 8 Pro | Tested on hardware, with known issues (see below) |
 | Redmi Buds 6 Pro | Untested (protocol shared with Gadgetbridge) |
 | Redmi Buds 6 | Untested (protocol shared with Gadgetbridge) |
 | Redmi Buds 6 Active | Untested (protocol shared with Gadgetbridge) |
@@ -29,11 +33,23 @@ to a minimal set (battery and noise mode).
 | Other "Redmi Buds ..." | Generic fallback, untested |
 
 REDMI Buds 8 is modelled as the Buds 8 Active capability set plus noise control, which was confirmed on hardware.
-REDMI Buds 8 Pro is assumed to be the Buds 8 set plus the adaptive noise cancelling toggle; this is a guess.
-Unlike the other models it never answers the authentication challenge, so its "MIWEAR" channel (28) is used
-without the handshake. It reports its name as "vela os earbuds"; the Bluetooth name identifies the model.
-It also offers an experimental spatial audio switch (Off / Spatial, config `0x1D` values `02` / `03`). `03` was
-confirmed spatial by ear; `02` comes from a Buds 6 Pro capture and is not yet confirmed on 8 Pro.
+### REDMI Buds 8 Pro: known issues
+
+Battery, noise control, dual connection and the spatial audio switch work. Not in Gadgetbridge, so the rest is
+modelled on the Buds 8 and partly wrong:
+
+- **Close the Xiaomi Earbuds app on your phone first.** The earbuds seem to accept one control app at a time;
+  while the phone app holds the control channel, the Mac app cannot connect, and vice versa.
+- **Pairing with the phone may get lost.** During testing the phone stopped finding the earbuds and connecting
+  to both devices at once did not work. Re-pair the phone if that happens (earbuds in the case, lid open,
+  hold the case button until the light blinks).
+- **Spatial audio** (Off / Spatial): "Spatial" audibly works and sounds like Dolby Audio, but the exact mode is
+  unknown, and the earbuds do not report the current mode, so the switch shows the last choice made in the app.
+- Noise cancelling strength, transparency type, equalizer presets and the "Adaptive noise cancelling" toggle
+  use Buds 8 values and may not do what their labels say.
+
+Technical details: [docs/models/buds-8-pro.md](docs/models/buds-8-pro.md).
+
 If you test another model, please open an issue with the result.
 
 ## Features
@@ -98,6 +114,8 @@ Details: [docs/nav.md](docs/nav.md) (goal, current state, decisions, protocol no
 
 - **Nothing happens / "Disconnected":** the earbuds must be connected to the Mac (for example as the audio
   output). Use the refresh button in the panel to reconnect.
+- **"The earbuds did not respond." / stuck connecting:** close the Xiaomi Earbuds app on your phone (it holds
+  the control channel), then press refresh.
 - **Bluetooth permission:** if you denied it, enable RedmiBudsBar under System Settings > Privacy & Security >
   Bluetooth, then relaunch.
 - **Logs:**
@@ -127,10 +145,17 @@ REDMI, Xiaomi and related names are trademarks of their respective owners. Use a
 
 ## Español
 
+> **Fork personal** de [ChristianVeneko/redmi-buds-bar](https://github.com/ChristianVeneko/redmi-buds-bar), sobre
+> todo para dar soporte a REDMI Buds 8 Pro para uso propio. No se mantiene activamente.
+
 RedmiBudsBar es una app de la barra de menús de macOS para auriculares Xiaomi **REDMI Buds**. Muestra la
 batería (izquierdo, derecho y estuche), cambia el modo de ruido y permite ajustar el ecualizador, los gestos y
-la función de buscar auriculares, según lo que soporte cada modelo. Solo se ha probado en dispositivos reales
-con REDMI Buds 8; los demás modelos usan el mismo protocolo que Gadgetbridge pero no se han probado.
+la función de buscar auriculares, según lo que soporte cada modelo. Se ha probado en dispositivos reales con
+REDMI Buds 8 y REDMI Buds 8 Pro (este último con problemas conocidos, ver arriba); los demás modelos usan el
+mismo protocolo que Gadgetbridge pero no se han probado.
+
+- **Importante:** cierra la app Xiaomi Earbuds del teléfono antes de usar RedmiBudsBar; los auriculares solo
+  aceptan una app de control a la vez. Con REDMI Buds 8 Pro el emparejamiento con el teléfono puede perderse.
 
 - **Requisitos:** macOS 14 o superior (Apple Silicon o Intel); los auriculares deben estar vinculados y
   conectados al Mac.

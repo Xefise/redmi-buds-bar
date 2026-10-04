@@ -3,6 +3,11 @@
 Control Xiaomi REDMI Buds from a Mac the way the official Android app (Xiaomi Earbuds) does on a phone,
 from the menu bar, without a phone.
 
+This repository is a personal fork of
+[ChristianVeneko/redmi-buds-bar](https://github.com/ChristianVeneko/redmi-buds-bar), kept for the
+maintainer's own REDMI Buds 8 Pro. It is not actively maintained for other users; changes are driven by what
+the maintainer needs.
+
 ## Goals
 
 - Show battery (left, right, case) at a glance in the menu bar and panel.
