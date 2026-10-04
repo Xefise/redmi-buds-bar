@@ -101,6 +101,12 @@ final class ParsingTests: XCTestCase {
         XCTAssertEqual(ConfigUpdate.parse(hex("03 00 07 05"), isNotification: false), [.equalizerPreset(.bass)])
     }
 
+    func testConfigSpatialAudioKeepsRawValue() {
+        XCTAssertEqual(ConfigUpdate.parse(hex("03 00 1d 0a"), isNotification: false), [.spatialAudio(0x0a)])
+        XCTAssertEqual(ConfigUpdate.parse(hex("03 00 1d 02"), isNotification: true), [.spatialAudio(0x02)])
+        XCTAssertEqual(ConfigUpdate.parse(hex("02 00 1d"), isNotification: false), [.unknown(code: 0x1d, data: [])])
+    }
+
     func testConfigEffectStrengthResponse() {
         XCTAssertEqual(ConfigUpdate.parse(hex("04 00 0b 01 02"), isNotification: false),
                        [.noiseCancellingStrength(.deep)])

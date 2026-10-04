@@ -22,6 +22,7 @@ struct PanelView: View {
                     BatteryCard(battery: model.state.battery, position: model.state.position)
                     if caps.hasNoiseControl { NoiseCard(model: model) }
                     if caps.hasEqualizer { EqualizerCard(model: model) }
+                    if caps.supportsSpatialAudio { SpatialAudioCard(model: model) }
                     if ExtrasCard.hasContent(model) { ExtrasCard(model: model) }
                     if caps.hasGestures, !model.state.gestures.isEmpty { GesturesCard(model: model) }
                     if !caps.isTestedOnHardware {
@@ -218,6 +219,28 @@ struct EqualizerCard: View {
                 .buttonStyle(.bordered)
                 .controlSize(.small)
             }
+        }
+    }
+}
+
+/// Experimental: shown before the earbuds report a value, so the command can be tried on unverified models.
+struct SpatialAudioCard: View {
+    let model: BudsViewModel
+
+    var body: some View {
+        let raw = model.state.spatialAudio
+        let current = raw.flatMap(SpatialAudioMode.init(rawValue:))
+        Card(title: tr("Spatial audio")) {
+            HStack(spacing: 6) {
+                ForEach(SpatialAudioMode.allCases, id: \.self) { mode in
+                    Chip(title: mode.title, isSelected: current == mode) { model.setSpatialAudio(mode) }
+                }
+            }
+            if let raw, current == nil {
+                Text(tr("Unknown (0x%02lX)", Int(raw))).font(.caption2).foregroundStyle(.secondary)
+            }
+            Text(tr("Experimental: not verified on hardware."))
+                .font(.caption2).foregroundStyle(.secondary)
         }
     }
 }

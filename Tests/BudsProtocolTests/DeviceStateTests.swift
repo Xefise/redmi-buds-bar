@@ -81,4 +81,14 @@ final class DeviceStatePhase2Tests: XCTestCase {
         XCTAssertEqual(state.position?.rawValue, 0x0c)
         XCTAssertEqual(state.wearingDetection, true)
     }
+
+    func testSpatialAudioConfig() {
+        var state = DeviceState()
+        state.apply(.config([.spatialAudio(0x0b)]))
+        XCTAssertEqual(state.spatialAudio, 0x0b)
+        XCTAssertEqual(state.spatialAudio.flatMap(SpatialAudioMode.init(rawValue:)), .immersive)
+        state.apply(.config([.spatialAudio(0x02)]))
+        XCTAssertEqual(state.spatialAudio, 0x02)
+        XCTAssertNil(SpatialAudioMode(rawValue: 0x02))
+    }
 }

@@ -109,6 +109,8 @@ public enum ConfigUpdate: Equatable, Sendable {
     case earbudsPosition(EarbudsPositionFlags)
     /// Wearing (ear) detection; zero means enabled, as in the run-info flag.
     case wearingDetection(Bool)
+    /// Raw spatial audio value; kept raw because the value table is unverified (see `SpatialAudioMode`).
+    case spatialAudio(UInt8)
     case unknown(code: UInt8, data: [UInt8])
 
     private static let curveFirstLevel = 12
@@ -158,6 +160,8 @@ public enum ConfigUpdate: Equatable, Sendable {
                 updates.append(.earbudsPosition(EarbudsPositionFlags(rawValue: data[0])))
             case .earDetection where data.count >= 1:
                 updates.append(.wearingDetection(data[0] == 0x00))
+            case .spatialAudio where data.count >= 1:
+                updates.append(.spatialAudio(data[0]))
             case .equalizerCurve:
                 // `entry` index = curveFirstLevel counts from the config code (GB indexes the whole TLV).
                 var levels: [UInt8] = []

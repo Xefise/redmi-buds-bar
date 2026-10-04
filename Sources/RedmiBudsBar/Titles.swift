@@ -55,6 +55,16 @@ extension EqualizerPreset {
     }
 }
 
+extension SpatialAudioMode {
+    var title: String {
+        switch self {
+        case .off: tr("Off")
+        case .dolby: tr("Dolby Audio")
+        case .immersive: tr("Immersive")
+        }
+    }
+}
+
 extension CustomEqualizerPreset {
     var title: String {
         switch self {
