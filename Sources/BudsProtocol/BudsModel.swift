@@ -185,14 +185,18 @@ public struct BudsModel: Equatable, Sendable {
     }
 
     private static let liteKey = "redmi buds 6 lite"
+    /// Matched with spaces removed, so "Buds 8 PRO", "buds8 pro" or "REDMI Buds 8 Pro (CN)" all count.
+    /// "buds" is required: a bare "8 pro" would also match phones such as "Pixel 8 Pro".
+    private static let eightProKey = "buds8pro"
 
     /// Resolves the most specific model: exact (case-insensitive) name match, "Buds 6 Lite" anywhere in the
-    /// name (as Gadgetbridge does), otherwise the generic fallback. "REDMI Buds 8" never resolves to
+    /// name (as Gadgetbridge does), "Buds 8 Pro" anywhere ignoring spaces, otherwise the generic fallback. "REDMI Buds 8" never resolves to
     /// "REDMI Buds 8 Active" or vice versa.
     public static func resolve(name: String) -> BudsModel {
         let key = normalize(name)
         if let exact = all.first(where: { normalize($0.displayName) == key }) { return exact }
         if key.contains(liteKey) { return buds6Lite }
+        if key.filter({ !$0.isWhitespace }).contains(eightProKey) { return buds8Pro }
         return genericFallback
     }
 

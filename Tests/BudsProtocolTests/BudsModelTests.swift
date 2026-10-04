@@ -40,6 +40,15 @@ final class BudsModelResolutionTests: XCTestCase {
         XCTAssertEqual(BudsModel.resolve(name: "redmi buds 6 lite (L)").id, .buds6Lite)
     }
 
+    func testEightProMatchesAnywhereIgnoringCaseAndSpaces() {
+        for name in ["REDMI Buds 8 PRO", "redmi buds 8 pro", "Redmi Buds8 Pro", "REDMI Buds 8Pro (CN)", "Xiaomi Buds 8 Pro"] {
+            XCTAssertEqual(BudsModel.resolve(name: name).id, .buds8Pro, name)
+        }
+        XCTAssertEqual(BudsModel.resolve(name: "Pixel 8 Pro").id, .generic)
+        XCTAssertFalse(BudsModel.isRedmiBuds(name: "Pixel 8 Pro"))
+        XCTAssertEqual(BudsModel.resolve(name: "REDMI Buds 8").id, .buds8)
+    }
+
     func testUnknownRedmiBudsFallBackToGeneric() {
         XCTAssertEqual(BudsModel.resolve(name: "Redmi Buds 7").id, .generic)
         XCTAssertEqual(BudsModel.resolve(name: "REDMI Buds 9 Pro").id, .generic)
