@@ -4,6 +4,10 @@ A macOS menu bar app for Xiaomi **REDMI Buds** earbuds. It shows battery levels 
 the noise mode, and exposes the settings your model supports: equalizer presets, custom equalizer curves,
 gestures, find my earbuds and more. It lives only in the menu bar (no Dock icon).
 
+> **Personal fork.** This is a fork of [ChristianVeneko/redmi-buds-bar](https://github.com/ChristianVeneko/redmi-buds-bar),
+> mainly to add REDMI Buds 8 Pro support for my own use. It is not actively maintained: issues and pull
+> requests may go unanswered. For the original project, see the upstream repository.
+
 ![Screenshot](docs/screenshot.png)
 
 <!-- Screenshot placeholder: add docs/screenshot.png -->
@@ -140,6 +144,9 @@ This is an unofficial community project. It is not affiliated with, endorsed by 
 REDMI, Xiaomi and related names are trademarks of their respective owners. Use at your own risk.
 
 ## Español
+
+> **Fork personal** de [ChristianVeneko/redmi-buds-bar](https://github.com/ChristianVeneko/redmi-buds-bar), sobre
+> todo para dar soporte a REDMI Buds 8 Pro para uso propio. No se mantiene activamente.
 
 RedmiBudsBar es una app de la barra de menús de macOS para auriculares Xiaomi **REDMI Buds**. Muestra la
 batería (izquierdo, derecho y estuche), cambia el modo de ruido y permite ajustar el ecualizador, los gestos y
