@@ -93,6 +93,12 @@ final class BudsModelCapabilityTests: XCTestCase {
         XCTAssertFalse(pro.isTestedOnHardware)
     }
 
+    func testOnlyBuds8ProUsesSerialPortChannel() {
+        for model in BudsModel.all + [BudsModel.genericFallback] {
+            XCTAssertEqual(model.controlChannel == .serialPort, model.id == .buds8Pro, "\(model.id)")
+        }
+    }
+
     func testOnlyBuds8ProOffersSpatialAudio() {
         for model in BudsModel.all + [BudsModel.genericFallback] {
             XCTAssertEqual(model.supportsSpatialAudio, model.id == .buds8Pro, "\(model.id)")

@@ -32,10 +32,12 @@ public struct BudsSession: Sendable {
         self.makeChallenge = challenge
     }
 
-    /// Frames to send right after the RFCOMM channel opened.
-    public mutating func begin() -> [[UInt8]] {
+    /// Frames to send right after the RFCOMM channel opened. Without authentication the initial info
+    /// requests go out immediately and no `.authenticated` event follows; the first response marks the link up.
+    public mutating func begin(authenticate: Bool = true) -> [[UInt8]] {
         decoder = FrameDecoder()
         builder = CommandBuilder()
+        guard authenticate else { return initialRequests() }
         let challenge = makeChallenge()
         let message = builder.message(.authChallenge, payload: [0x01] + challenge)
         return [message.encode()]
@@ -51,6 +53,11 @@ public struct BudsSession: Sendable {
             handle(message, into: &output)
         }
         return output
+    }
+
+    private mutating func initialRequests() -> [[UInt8]] {
+        builder.frames(.requestDeviceInfo) + builder.frames(.requestRunInfo)
+            + builder.frames(.requestConfig(ConfigCode.initialRequests))
     }
 
     private func acknowledge(_ message: Message) -> [UInt8] {
@@ -77,9 +84,7 @@ public struct BudsSession: Sendable {
                 output.outgoing.append(
                     Message(type: .response, opcode: .authConfirm, sequence: message.sequence, payload: [0x01]).encode()
                 )
-                output.outgoing += builder.frames(.requestDeviceInfo)
-                output.outgoing += builder.frames(.requestRunInfo)
-                output.outgoing += builder.frames(.requestConfig(ConfigCode.initialRequests))
+                output.outgoing += initialRequests()
                 output.events.append(.authenticated)
             }
         case .getDeviceInfo:
