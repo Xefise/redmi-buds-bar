@@ -15,6 +15,7 @@ public enum Command: Equatable, Sendable {
     case setAmbientSoundCycle(position: EarbudPosition, cycle: AmbientSoundCycle)
     /// Writes the custom equalizer curve. The preset must also be switched to `.custom`.
     case setCustomEqualizer(EqualizerCurve)
+    case setSpatialAudio(SpatialAudioMode)
     /// Makes the earbuds play a locating sound (stop is sent first, like Gadgetbridge).
     case startFindEarbuds(FindTarget)
     case stopFindEarbuds
@@ -73,6 +74,8 @@ public struct CommandBuilder: Sendable {
             return [message(.setConfig, payload: payload).encode()]
         case .setCustomEqualizer(let curve):
             return [message(.setConfig, payload: curve.encodePayload()).encode()]
+        case .setSpatialAudio(let mode):
+            return [message(.setConfig, payload: [0x03, 0x00, ConfigCode.spatialAudio.rawValue, mode.rawValue]).encode()]
         case .startFindEarbuds(let target):
             return [
                 message(.setConfig, payload: Self.findPayload(start: false, target: .both)).encode(),

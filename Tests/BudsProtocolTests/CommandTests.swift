@@ -35,6 +35,15 @@ final class CommandTests: XCTestCase {
                        hex("fedcbac4f30003100002ef") + hex("fedcbac4f3000311000aef"))
     }
 
+    /// Payloads `03 00 1D 03/0A/0B` as published for REDMI Buds 8 Pro.
+    func testSpatialAudio() {
+        var builder = CommandBuilder(sequence: 7)
+        XCTAssertEqual(builder.encode(.setSpatialAudio(.off)), hex("fedcbac4f2000507" + "03001d03" + "ef"))
+        XCTAssertEqual(builder.encode(.setSpatialAudio(.dolby)), hex("fedcbac4f2000508" + "03001d0a" + "ef"))
+        XCTAssertEqual(builder.encode(.setSpatialAudio(.immersive)), hex("fedcbac4f2000509" + "03001d0b" + "ef"))
+        XCTAssertEqual(builder.encode(.requestConfig([.spatialAudio])), hex("fedcbac4f300030a001def"))
+    }
+
     func testEqualizerPresetAndBooleanSettings() {
         var builder = CommandBuilder(sequence: 5)
         XCTAssertEqual(builder.encode(.setEqualizerPreset(.bass)), hex("fedcbac4f2000505" + "03000705" + "ef"))

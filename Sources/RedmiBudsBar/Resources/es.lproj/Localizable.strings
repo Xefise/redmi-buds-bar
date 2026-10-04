@@ -18,13 +18,16 @@
 "Custom" = "Personalizado";
 "Deep" = "Profunda";
 "Disconnected" = "Desconectado";
+"Dolby Audio" = "Dolby Audio";
 "Double tap" = "Doble toque";
 "Dual device connection" = "Conexión con dos dispositivos";
 "Earbuds are in the case" = "Los auriculares están en el estuche";
 "Equalizer" = "Ecualizador";
+"Experimental: not verified on hardware." = "Experimental: no verificado en el dispositivo.";
 "Extras" = "Extras";
 "Find my earbuds" = "Buscar mis auriculares";
 "Gestures" = "Gestos";
+"Immersive" = "Inmersivo";
 "Language" = "Idioma";
 "Launch at login" = "Abrir al iniciar sesión";
 "Left" = "Izquierdo";
@@ -57,6 +60,7 @@
 "Settings" = "Ajustes";
 "Show battery in menu bar" = "Mostrar batería en la barra de menús";
 "Single tap" = "Un toque";
+"Spatial audio" = "Audio espacial";
 "Standard" = "Estándar";
 "Stop" = "Detener";
 "Switch to noise cancelling for immersion" = "Activar la cancelación de ruido para mayor inmersión";

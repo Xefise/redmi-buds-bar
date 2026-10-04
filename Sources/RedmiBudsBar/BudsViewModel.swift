@@ -154,6 +154,7 @@ final class BudsViewModel {
         case .authenticated:
             connection = .connected
             Log.protocolLog.info("Authenticated")
+            requestModelSpecificConfig()
         case .unhandled(let message):
             Log.protocolLog.notice("Unhandled frame: \(message.encode().hexString, privacy: .public)")
         case .status(let updates):
@@ -174,6 +175,9 @@ final class BudsViewModel {
         if case .config(let updates) = event {
             for case .earbudsPosition(let flags) in updates {
                 Log.protocolLog.info("Earbuds position flags: \(flags.rawValue, format: .hex)")
+            }
+            for case .spatialAudio(let value) in updates {
+                Log.protocolLog.info("Spatial audio value: \(value, format: .hex)")
             }
         }
         if case .status = event { checkLowBattery() }
@@ -270,6 +274,11 @@ final class BudsViewModel {
         run(.setWearingDetection(on))
     }
 
+    func setSpatialAudio(_ mode: SpatialAudioMode) {
+        state.spatialAudio = mode.rawValue
+        run(.setSpatialAudio(mode))
+    }
+
     func setGesture(tap: TapType, position: EarbudPosition, action: UInt8) {
         if let index = state.gestures.firstIndex(where: { $0.tap == tap }) {
             if position == .left { state.gestures[index].left = action } else { state.gestures[index].right = action }
@@ -319,6 +328,12 @@ final class BudsViewModel {
         run(.requestDeviceInfo)
         run(.requestRunInfo)
         run(.requestConfig(ConfigCode.initialRequests))
+        requestModelSpecificConfig()
+    }
+
+    /// Config codes outside Gadgetbridge's list are only requested from models known to support them.
+    private func requestModelSpecificConfig() {
+        if budsModel.supportsSpatialAudio { run(.requestConfig([.spatialAudio])) }
     }
 }
 

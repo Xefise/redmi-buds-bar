@@ -93,6 +93,12 @@ final class BudsModelCapabilityTests: XCTestCase {
         XCTAssertFalse(pro.isTestedOnHardware)
     }
 
+    func testOnlyBuds8ProOffersSpatialAudio() {
+        for model in BudsModel.all + [BudsModel.genericFallback] {
+            XCTAssertEqual(model.supportsSpatialAudio, model.id == .buds8Pro, "\(model.id)")
+        }
+    }
+
     func testBuds8ActiveCapabilities() {
         let model = BudsModel.resolve(name: "REDMI Buds 8 Active")
         XCTAssertEqual(model.equalizerPresets, [.balanced, .treble, .bass, .voice, .volume, .custom])

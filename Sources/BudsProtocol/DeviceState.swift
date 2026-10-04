@@ -14,6 +14,8 @@ public struct DeviceState: Equatable, Sendable {
     public var autoAnswer: Bool?
     public var doubleConnection: Bool?
     public var wearingDetection: Bool?
+    /// Raw spatial audio value as reported (or last set); see `SpatialAudioMode`.
+    public var spatialAudio: UInt8?
     public var equalizerCurve: EqualizerCurve?
     public var position: EarbudsPositionFlags?
     public var gestures: [GestureAssignment] = []
@@ -70,6 +72,7 @@ public struct DeviceState: Equatable, Sendable {
             if let curve = EqualizerCurve(levelCodes: levels) { equalizerCurve = curve }
         case .earbudsPosition(let flags): position = flags
         case .wearingDetection(let value): wearingDetection = value
+        case .spatialAudio(let value): spatialAudio = value
         case .unknown:
             break
         }
@@ -86,6 +89,7 @@ extension DeviceState {
             && lhs.adaptiveNoiseCancelling == rhs.adaptiveNoiseCancelling
             && lhs.adaptiveSound == rhs.adaptiveSound && lhs.autoAnswer == rhs.autoAnswer
             && lhs.doubleConnection == rhs.doubleConnection && lhs.wearingDetection == rhs.wearingDetection
+            && lhs.spatialAudio == rhs.spatialAudio
             && lhs.gestures == rhs.gestures && lhs.equalizerCurve == rhs.equalizerCurve
             && lhs.position == rhs.position
             && lhs.ambientSoundCycle?.left == rhs.ambientSoundCycle?.left

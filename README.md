@@ -30,6 +30,8 @@ to a minimal set (battery and noise mode).
 
 REDMI Buds 8 is modelled as the Buds 8 Active capability set plus noise control, which was confirmed on hardware.
 REDMI Buds 8 Pro is assumed to be the Buds 8 set plus the adaptive noise cancelling toggle; this is a guess.
+It also offers an experimental spatial audio switch (Off / Dolby Audio / Immersive, config `0x1D`). Its values
+come from a third-party Buds 8 Pro capture and are unverified; the raw value reported by the earbuds is logged.
 If you test another model, please open an issue with the result.
 
 ## Features

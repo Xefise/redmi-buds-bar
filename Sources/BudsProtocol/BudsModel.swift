@@ -21,6 +21,8 @@ public struct BudsModel: Equatable, Sendable {
     public var equalizerPresets: [EqualizerPreset] = []
     public var supportsCustomEqualizer = false
     public var supportsAdaptiveSound = false
+    /// Experimental: spatial audio values are unverified (see `SpatialAudioMode`).
+    public var supportsSpatialAudio = false
 
     public var supportsWearingDetection = false
     public var supportsAutoAnswer = false
@@ -146,12 +148,14 @@ public struct BudsModel: Equatable, Sendable {
     }
 
     /// Not in Gadgetbridge: assumed to be the Buds 8 capability set plus adaptive noise cancelling
-    /// (the 5 Pro / 6 Pro toggle). Untested; the strength pickers only show once the earbuds report a value.
+    /// (the 5 Pro / 6 Pro toggle) and spatial audio. Untested; the strength pickers only show once the
+    /// earbuds report a value.
     private static let buds8Pro = eight(.buds8Pro, "REDMI Buds 8 Pro") {
         $0.ambientSoundModes = AmbientSoundMode.allCases
         $0.noiseCancellingStrengths = [.balanced, .light, .deep]
         $0.transparencyStrengths = TransparencyStrength.allCases
         $0.supportsAdaptiveNoiseCancelling = true
+        $0.supportsSpatialAudio = true
     }
 
     public static let genericFallback = BudsModel(.generic, "REDMI Buds") {
