@@ -15,8 +15,6 @@ final class RFCOMMTransport: NSObject, IOBluetoothRFCOMMChannelDelegate {
     /// Custom service UUID advertised by the earbuds next to the "miwear" SDP service name.
     static let serviceUUID = "df21fe2c-2515-4fdb-8886-f12c4d67927c"
     static let serviceName = "miwear"
-    /// Serial Port Profile service class.
-    static let serialPortUUID16: BluetoothSDPUUID16 = 0x1101
     static let fallbackChannelID: BluetoothRFCOMMChannelID = 28
 
     var onEvent: ((Event) -> Void)?
@@ -24,7 +22,6 @@ final class RFCOMMTransport: NSObject, IOBluetoothRFCOMMChannelDelegate {
     private(set) var device: IOBluetoothDevice?
     private var channel: IOBluetoothRFCOMMChannel?
     private var sdpTimeout: Timer?
-    private var channelKind: BudsModel.ControlChannel = .miwear
     private(set) var isOpening = false
 
     var isOpen: Bool { channel != nil && !isOpening }
@@ -38,10 +35,9 @@ final class RFCOMMTransport: NSObject, IOBluetoothRFCOMMChannelDelegate {
         }
     }
 
-    func connect(to device: IOBluetoothDevice, channel kind: BudsModel.ControlChannel) {
+    func connect(to device: IOBluetoothDevice) {
         guard !isOpening, channel == nil else { return }
         self.device = device
-        channelKind = kind
         isOpening = true
         Log.transport.info("Looking up SDP records for \(device.name ?? "?", privacy: .public)")
 
@@ -67,7 +63,7 @@ final class RFCOMMTransport: NSObject, IOBluetoothRFCOMMChannelDelegate {
         guard isOpening, channel == nil else { return }
         sdpTimeout?.invalidate()
         var channelID = Self.fallbackChannelID
-        if status == kIOReturnSuccess, let id = Self.controlChannelID(in: device, kind: channelKind) {
+        if status == kIOReturnSuccess, let id = Self.controlChannelID(in: device) {
             channelID = id
         } else {
             Log.transport.error("SDP lookup yielded no control channel (status \(status)); using fallback")
@@ -81,28 +77,22 @@ final class RFCOMMTransport: NSObject, IOBluetoothRFCOMMChannelDelegate {
         return id
     }
 
-    private static func controlChannelID(in device: IOBluetoothDevice, kind: BudsModel.ControlChannel) -> BluetoothRFCOMMChannelID? {
+    private static func controlChannelID(in device: IOBluetoothDevice) -> BluetoothRFCOMMChannelID? {
         let records = (device.services as? [IOBluetoothSDPServiceRecord]) ?? []
         for record in records {
             let channel = rfcommChannelID(of: record).map { "\($0)" } ?? "-"
             Log.transport.debug("SDP service: \(record.getServiceName() ?? "<unnamed>", privacy: .public), channel \(channel, privacy: .public)")
         }
-        let match: IOBluetoothSDPServiceRecord?
-        switch kind {
-        case .miwear:
-            let uuidBytes = UUID(uuidString: serviceUUID).map { u -> [UInt8] in
-                withUnsafeBytes(of: u.uuid) { Array($0) }
-            } ?? []
-            let uuid = uuidBytes.withUnsafeBufferPointer {
-                IOBluetoothSDPUUID(bytes: $0.baseAddress, length: $0.count)
-            }
-            // Newer firmware advertises the name in upper case ("MIWEAR").
-            match = records.first { $0.getServiceName()?.lowercased() == serviceName }
-                ?? records.first { $0.hasService(from: [uuid]) }
-        case .serialPort:
-            let uuid = IOBluetoothSDPUUID(uuid16: serialPortUUID16)
-            match = records.first { $0.hasService(from: [uuid]) }
+        let uuidBytes = UUID(uuidString: serviceUUID).map { u -> [UInt8] in
+            withUnsafeBytes(of: u.uuid) { Array($0) }
+        } ?? []
+        let uuid = uuidBytes.withUnsafeBufferPointer {
+            IOBluetoothSDPUUID(bytes: $0.baseAddress, length: $0.count)
         }
+        // Newer firmware advertises the name in upper case ("MIWEAR"). On Buds 8 Pro the UUID below belongs
+        // to a different record ("RFCOMM COM", channel 17) that never answers, so the name must win.
+        let match = records.first { $0.getServiceName()?.lowercased() == serviceName }
+            ?? records.first { $0.hasService(from: [uuid]) }
         guard let match, let id = rfcommChannelID(of: match) else { return nil }
         Log.transport.info("SDP resolved control channel \(id)")
         return id

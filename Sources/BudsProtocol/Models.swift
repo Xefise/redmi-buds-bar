@@ -57,12 +57,12 @@ public enum LongGestureAction: UInt8, CaseIterable, Sendable {
     case ambientSoundControl = 0x06
 }
 
-/// Spatial audio rendering (config 0x1D). Not in Gadgetbridge: values come from a REDMI Buds 8 Pro capture
-/// published by a third-party project; Buds 6 Pro reportedly uses different values, so treat as unverified.
+/// Spatial audio rendering (config 0x1D). Not in Gadgetbridge: values from BudsLink's Buds 6 Pro capture
+/// (`02` off, `03` on, `0B` on with head tracking). On Buds 8 Pro `03` is the only value that sounds spatial by
+/// ear; `0A` / `0B` (labelled Dolby / Immersive by another third-party client) sound unprocessed on a Mac.
 public enum SpatialAudioMode: UInt8, CaseIterable, Sendable {
-    case off = 0x03
-    case dolby = 0x0A
-    case immersive = 0x0B
+    case off = 0x02
+    case spatial = 0x03
 }
 
 /// Which noise modes a long press cycles through.

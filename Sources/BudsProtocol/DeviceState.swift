@@ -72,7 +72,10 @@ public struct DeviceState: Equatable, Sendable {
             if let curve = EqualizerCurve(levelCodes: levels) { equalizerCurve = curve }
         case .earbudsPosition(let flags): position = flags
         case .wearingDetection(let value): wearingDetection = value
-        case .spatialAudio(let value): spatialAudio = value
+        case .spatialAudio(let value):
+            // Buds 8 Pro answer GET_CONFIG with 0x00 even right after a mode was set and acknowledged,
+            // so 0x00 carries no information; keep the last known value instead.
+            if value != 0x00 { spatialAudio = value }
         case .unknown:
             break
         }

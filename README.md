@@ -30,10 +30,10 @@ to a minimal set (battery and noise mode).
 
 REDMI Buds 8 is modelled as the Buds 8 Active capability set plus noise control, which was confirmed on hardware.
 REDMI Buds 8 Pro is assumed to be the Buds 8 set plus the adaptive noise cancelling toggle; this is a guess.
-Unlike the other models it is controlled over the Serial Port channel (usually 28) without the authentication
-handshake: its "MIWEAR" channel does not answer the challenge.
-It also offers an experimental spatial audio switch (Off / Dolby Audio / Immersive, config `0x1D`). Its values
-come from a third-party Buds 8 Pro capture and are unverified; the raw value reported by the earbuds is logged.
+Unlike the other models it never answers the authentication challenge, so its "MIWEAR" channel (28) is used
+without the handshake. It reports its name as "vela os earbuds"; the Bluetooth name identifies the model.
+It also offers an experimental spatial audio switch (Off / Spatial, config `0x1D` values `02` / `03`). `03` was
+confirmed spatial by ear; `02` comes from a Buds 6 Pro capture and is not yet confirmed on 8 Pro.
 If you test another model, please open an issue with the result.
 
 ## Features
@@ -91,6 +91,8 @@ The version comes from the `VERSION` file. `build-app.sh` writes it into `Info.p
 - `Sources/BudsProtocol` is pure Swift (frame codec, authentication, parsers, command builders, model
   capabilities). `Sources/RedmiBudsBar` contains the IOBluetooth transport, view model and SwiftUI views.
   Tests use frames captured from a real REDMI Buds 8 as fixtures.
+
+Details: [docs/nav.md](docs/nav.md) (goal, current state, decisions, protocol notes per model).
 
 ## Troubleshooting
 

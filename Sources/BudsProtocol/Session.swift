@@ -93,12 +93,10 @@ public struct BudsSession: Sendable {
             output.events.append(.runInfo(RunInfo.parse(message.payload)))
         case .reportStatus:
             output.events.append(.status(StatusUpdate.parse(message.payload)))
-            if message.type.isRequest { output.outgoing.append(acknowledge(message)) }
         case .getConfig:
             output.events.append(.config(ConfigUpdate.parse(message.payload, isNotification: false)))
         case .notifyConfig:
             output.events.append(.config(ConfigUpdate.parse(message.payload, isNotification: true)))
-            if message.type.isRequest { output.outgoing.append(acknowledge(message)) }
         case .anc, .setConfig:
             if message.type == .response {
                 output.events.append(.commandAcknowledged(message.opcode))
@@ -107,6 +105,11 @@ public struct BudsSession: Sendable {
             }
         case .unknown:
             output.events.append(.unhandled(message))
+        }
+        // The earbuds resend unconfirmed requests and notifications (Buds 8 Pro repeats opcode 0x07 every
+        // 2 s), so confirm every one, including those we do not interpret. The handshake replies above.
+        if message.type.isRequest, message.opcode != .authChallenge, message.opcode != .authConfirm {
+            output.outgoing.append(acknowledge(message))
         }
     }
 }

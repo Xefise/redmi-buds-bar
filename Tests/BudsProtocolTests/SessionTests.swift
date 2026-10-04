@@ -96,7 +96,7 @@ final class SessionTests: XCTestCase {
         XCTAssertEqual(frames, [hex("fedcbac408000402" + "020402" + "ef")])
     }
 
-    /// Serial Port channel (Buds 8 Pro): no challenge, the info requests go out right away.
+    /// Buds 8 Pro: no challenge, the info requests go out right away.
     func testBeginWithoutAuthenticationRequestsInfoImmediately() {
         var session = makeSession()
         let frames = session.begin(authenticate: false)
@@ -106,5 +106,18 @@ final class SessionTests: XCTestCase {
         XCTAssertFalse(frames.contains { $0[4] == Opcode.authChallenge.code })
         let out = session.receive(hex(Fixture.deviceInfoResponse))
         XCTAssertTrue(out.events.contains { if case .deviceInfo = $0 { true } else { false } })
+    }
+
+    /// Captured from Buds 8 Pro: resent three times while unacknowledged.
+    func testUnknownNotificationIsAcknowledged() {
+        var session = makeSession()
+        let out = session.receive(hex("fedcbac70700020301ef"))
+        XCTAssertEqual(out.outgoing, [hex("fedcba04070002" + "0003" + "ef")])
+        XCTAssertTrue(out.events.contains { if case .unhandled = $0 { true } else { false } })
+    }
+
+    func testResponsesAreNotAcknowledged() {
+        var session = makeSession()
+        XCTAssertTrue(session.receive(hex("fedcba04f20002000def")).outgoing.isEmpty)
     }
 }

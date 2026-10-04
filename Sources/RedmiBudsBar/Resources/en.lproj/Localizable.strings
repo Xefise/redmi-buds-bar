@@ -18,7 +18,6 @@
 "Custom" = "Custom";
 "Deep" = "Deep";
 "Disconnected" = "Disconnected";
-"Dolby Audio" = "Dolby Audio";
 "Double tap" = "Double tap";
 "Dual device connection" = "Dual device connection";
 "Earbuds are in the case" = "Earbuds are in the case";
@@ -27,7 +26,6 @@
 "Extras" = "Extras";
 "Find my earbuds" = "Find my earbuds";
 "Gestures" = "Gestures";
-"Immersive" = "Immersive";
 "Language" = "Language";
 "Launch at login" = "Launch at login";
 "Left" = "Left";
@@ -60,6 +58,7 @@
 "Settings" = "Settings";
 "Show battery in menu bar" = "Show battery in menu bar";
 "Single tap" = "Single tap";
+"Spatial" = "Spatial";
 "Spatial audio" = "Spatial audio";
 "Standard" = "Standard";
 "Stop" = "Stop";

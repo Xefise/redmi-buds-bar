@@ -84,11 +84,21 @@ final class DeviceStatePhase2Tests: XCTestCase {
 
     func testSpatialAudioConfig() {
         var state = DeviceState()
+        state.apply(.config([.spatialAudio(0x03)]))
+        XCTAssertEqual(state.spatialAudio, 0x03)
+        XCTAssertEqual(state.spatialAudio.flatMap(SpatialAudioMode.init(rawValue:)), .spatial)
         state.apply(.config([.spatialAudio(0x0b)]))
         XCTAssertEqual(state.spatialAudio, 0x0b)
-        XCTAssertEqual(state.spatialAudio.flatMap(SpatialAudioMode.init(rawValue:)), .immersive)
-        state.apply(.config([.spatialAudio(0x02)]))
-        XCTAssertEqual(state.spatialAudio, 0x02)
-        XCTAssertNil(SpatialAudioMode(rawValue: 0x02))
+        XCTAssertNil(SpatialAudioMode(rawValue: 0x0b))
+    }
+
+    /// Captured from Buds 8 Pro: GET_CONFIG 0x1D returns 0x00 regardless of the mode that was set.
+    func testSpatialAudioZeroIsNotReported() {
+        var state = DeviceState()
+        state.apply(.config([.spatialAudio(0x00)]))
+        XCTAssertNil(state.spatialAudio)
+        state.spatialAudio = SpatialAudioMode.spatial.rawValue
+        state.apply(.config([.spatialAudio(0x00)]))
+        XCTAssertEqual(state.spatialAudio, SpatialAudioMode.spatial.rawValue)
     }
 }
