@@ -24,6 +24,14 @@ final class ParsingTests: XCTestCase {
         XCTAssertEqual(info.battery.case, BatteryLevel(percent: 79, isCharging: false))
     }
 
+    func testDeviceInfoNameIsCutAtNulAndTrimmed() {
+        // TLV: len 0x14 | index 00 | " REDMI Buds 8 Pro" + NUL padding
+        let name = Array(" REDMI Buds 8 Pro".utf8)
+        let payload = [UInt8(name.count + 3), 0x00] + name + [0x00, 0x00]
+        XCTAssertEqual(DeviceInfo.parse(payload).name, "REDMI Buds 8 Pro")
+        XCTAssertNil(DeviceInfo.parse([0x03, 0x00, 0x00, 0x00]).name)
+    }
+
     func testDeviceInfoToleratesTruncatedPayload() {
         let truncated = Array(payload(Fixture.deviceInfoResponse).prefix(20))
         _ = DeviceInfo.parse(truncated)

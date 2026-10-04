@@ -26,8 +26,12 @@ final class BudsViewModel {
 
     static let selectedDeviceKey = "selectedDeviceAddress"
 
-    /// Capabilities of the model resolved from the device name (the name reported by the earbuds wins).
-    var budsModel: BudsModel { BudsModel.resolve(name: state.name ?? deviceName) }
+    /// Capabilities of the model resolved from the device name. The name reported by the earbuds wins when it
+    /// identifies a known model; otherwise the Bluetooth name is used (it also picks the control channel).
+    var budsModel: BudsModel {
+        if let reported = state.name.map(BudsModel.resolve(name:)), reported.id != .generic { return reported }
+        return BudsModel.resolve(name: deviceName)
+    }
 
     private let transport = RFCOMMTransport()
     private var session = BudsSession()
@@ -198,7 +202,11 @@ final class BudsViewModel {
             }
         case .commandAcknowledged(let opcode):
             Log.protocolLog.debug("Command acknowledged: \(opcode.code)")
-        case .deviceInfo, .runInfo:
+        case .deviceInfo(let info):
+            if let name = info.name, name != state.name {
+                Log.protocolLog.info("Reported name: \(name, privacy: .public) -> model \(BudsModel.resolve(name: name).id.rawValue, privacy: .public)")
+            }
+        case .runInfo:
             break
         }
         state.apply(event)

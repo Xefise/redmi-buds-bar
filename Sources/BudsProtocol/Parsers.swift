@@ -30,7 +30,12 @@ public struct DeviceInfo: Equatable, Sendable {
         for (index, data) in parseTLV(payload) {
             switch index {
             case 0x00:
-                info.name = String(decoding: data, as: UTF8.self)
+                // Some firmware pads the name with NUL bytes.
+                let bytes = data.prefix { $0 != 0x00 }
+                var name = Substring(String(decoding: bytes, as: UTF8.self))
+                while name.first?.isWhitespace == true { name.removeFirst() }
+                while name.last?.isWhitespace == true { name.removeLast() }
+                info.name = name.isEmpty ? nil : String(name)
             case 0x01 where data.count >= 4:
                 info.firmware = version(data[0], data[1])
                 info.secondaryFirmware = version(data[2], data[3])
