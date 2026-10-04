@@ -2,7 +2,7 @@
 /// and `AbstractRedmiBudsCoordinator`. Models are resolved from the Bluetooth device name.
 public struct BudsModel: Equatable, Sendable {
     public enum Identifier: String, CaseIterable, Sendable {
-        case buds3Pro, buds4Active, buds5Pro, buds6, buds6Pro, buds6Active, buds6Lite, buds8, buds8Active
+        case buds3Pro, buds4Active, buds5Pro, buds6, buds6Pro, buds6Active, buds6Lite, buds8, buds8Active, buds8Pro
         /// Unknown "Redmi Buds*" name: only commands confirmed on hardware are offered.
         case generic
     }
@@ -145,13 +145,22 @@ public struct BudsModel: Equatable, Sendable {
         $0.transparencyStrengths = TransparencyStrength.allCases
     }
 
+    /// Not in Gadgetbridge: assumed to be the Buds 8 capability set plus adaptive noise cancelling
+    /// (the 5 Pro / 6 Pro toggle). Untested; the strength pickers only show once the earbuds report a value.
+    private static let buds8Pro = eight(.buds8Pro, "REDMI Buds 8 Pro") {
+        $0.ambientSoundModes = AmbientSoundMode.allCases
+        $0.noiseCancellingStrengths = [.balanced, .light, .deep]
+        $0.transparencyStrengths = TransparencyStrength.allCases
+        $0.supportsAdaptiveNoiseCancelling = true
+    }
+
     public static let genericFallback = BudsModel(.generic, "REDMI Buds") {
         $0.ambientSoundModes = AmbientSoundMode.allCases
     }
 
     public static let all: [BudsModel] = [
         buds3Pro, buds4Active, fivePro(.buds5Pro, "Redmi Buds 5 Pro"), fivePro(.buds6, "Redmi Buds 6"),
-        fivePro(.buds6Pro, "Redmi Buds 6 Pro"), buds6Active, buds6Lite, buds8, buds8Active,
+        fivePro(.buds6Pro, "Redmi Buds 6 Pro"), buds6Active, buds6Lite, buds8, buds8Active, buds8Pro,
     ]
 
     // MARK: Name resolution

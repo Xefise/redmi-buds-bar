@@ -11,6 +11,7 @@ final class BudsModelResolutionTests: XCTestCase {
         XCTAssertEqual(BudsModel.resolve(name: "REDMI Buds 8").id, .buds8)
         XCTAssertEqual(BudsModel.resolve(name: "Redmi Buds 6 Active").id, .buds6Active)
         XCTAssertEqual(BudsModel.resolve(name: "Redmi Buds 6").id, .buds6)
+        XCTAssertEqual(BudsModel.resolve(name: "REDMI Buds 8 Pro").id, .buds8Pro)
     }
 
     func testResolutionIsCaseInsensitive() {
@@ -28,7 +29,7 @@ final class BudsModelResolutionTests: XCTestCase {
             ("Redmi Buds 3 Pro", .buds3Pro), ("Redmi Buds 4 Active", .buds4Active),
             ("Redmi Buds 5 Pro", .buds5Pro), ("Redmi Buds 6", .buds6), ("Redmi Buds 6 Pro", .buds6Pro),
             ("Redmi Buds 6 Active", .buds6Active), ("Redmi Buds 6 Lite", .buds6Lite),
-            ("REDMI Buds 8", .buds8), ("REDMI Buds 8 Active", .buds8Active),
+            ("REDMI Buds 8", .buds8), ("REDMI Buds 8 Active", .buds8Active), ("REDMI Buds 8 Pro", .buds8Pro),
         ]
         for (name, id) in expected { XCTAssertEqual(BudsModel.resolve(name: name).id, id, name) }
     }
@@ -41,7 +42,7 @@ final class BudsModelResolutionTests: XCTestCase {
 
     func testUnknownRedmiBudsFallBackToGeneric() {
         XCTAssertEqual(BudsModel.resolve(name: "Redmi Buds 7").id, .generic)
-        XCTAssertEqual(BudsModel.resolve(name: "REDMI Buds 8 Pro").id, .generic)
+        XCTAssertEqual(BudsModel.resolve(name: "REDMI Buds 9 Pro").id, .generic)
         XCTAssertEqual(BudsModel.resolve(name: "Redmi Buds 60").id, .generic)
         XCTAssertEqual(BudsModel.resolve(name: "").id, .generic)
     }
@@ -75,6 +76,21 @@ final class BudsModelCapabilityTests: XCTestCase {
         XCTAssertEqual(plain.supportsDoubleConnection, active.supportsDoubleConnection)
         XCTAssertEqual(plain.singleTapActions, active.singleTapActions)
         XCTAssertEqual(plain.longPressActions, active.longPressActions)
+    }
+
+    func testBuds8ProIsBuds8WithAdaptiveNoiseCancelling() {
+        let plain = BudsModel.resolve(name: "REDMI Buds 8")
+        let pro = BudsModel.resolve(name: "REDMI Buds 8 Pro")
+        XCTAssertEqual(pro.ambientSoundModes, plain.ambientSoundModes)
+        XCTAssertEqual(pro.noiseCancellingStrengths, plain.noiseCancellingStrengths)
+        XCTAssertEqual(pro.transparencyStrengths, plain.transparencyStrengths)
+        XCTAssertEqual(pro.equalizerPresets, plain.equalizerPresets)
+        XCTAssertEqual(pro.supportsCustomEqualizer, plain.supportsCustomEqualizer)
+        XCTAssertEqual(pro.singleTapActions, plain.singleTapActions)
+        XCTAssertEqual(pro.longPressActions, plain.longPressActions)
+        XCTAssertTrue(pro.supportsAdaptiveNoiseCancelling)
+        XCTAssertFalse(plain.supportsAdaptiveNoiseCancelling)
+        XCTAssertFalse(pro.isTestedOnHardware)
     }
 
     func testBuds8ActiveCapabilities() {

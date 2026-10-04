@@ -18,6 +18,7 @@ to a minimal set (battery and noise mode).
 | --- | --- |
 | REDMI Buds 8 | Tested on hardware |
 | REDMI Buds 8 Active | Untested (protocol shared with Gadgetbridge) |
+| REDMI Buds 8 Pro | Untested (not in Gadgetbridge; assumed Buds 8 + adaptive ANC) |
 | Redmi Buds 6 Pro | Untested (protocol shared with Gadgetbridge) |
 | Redmi Buds 6 | Untested (protocol shared with Gadgetbridge) |
 | Redmi Buds 6 Active | Untested (protocol shared with Gadgetbridge) |
@@ -28,6 +29,7 @@ to a minimal set (battery and noise mode).
 | Other "Redmi Buds ..." | Generic fallback, untested |
 
 REDMI Buds 8 is modelled as the Buds 8 Active capability set plus noise control, which was confirmed on hardware.
+REDMI Buds 8 Pro is assumed to be the Buds 8 set plus the adaptive noise cancelling toggle; this is a guess.
 If you test another model, please open an issue with the result.
 
 ## Features
