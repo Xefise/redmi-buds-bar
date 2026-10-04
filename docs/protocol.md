@@ -90,7 +90,7 @@ GET_DEVICE_RUN_INFO indices: `09` noise mode, `0A` wearing detection (inverted: 
 | `0A` | Long-press noise cycle | `left right` | Gadgetbridge |
 | `0B` | Effect strength | `01 <nc>` / `02 <transparency>`; notification: `<mode> <strength>` | Gadgetbridge; 8 Pro reports `01 13`, see model notes |
 | `0C` | Earbuds position | bit flags worn L/R, in case L/R | Inferred |
-| `1D` | Spatial audio | `03` off, `0A` Dolby, `0B` Immersive | Third-party 8 Pro client; 8 Pro acknowledges, GET always returns `00` |
+| `1D` | Spatial audio | `02` off, `03` on, `0B` on + head tracking | BudsLink (6 Pro); `03` spatial by ear on 8 Pro, GET always returns `00` |
 | `25` | Adaptive noise cancelling | `00`/`01` | Gadgetbridge; a third-party 8 Pro client treats it as in-ear detection |
 | `29` | Adaptive sound | `00`/`01` | Gadgetbridge |
 | `36` | Scene rendering (8 Pro) | `01 <scene>` | Third-party, not implemented |

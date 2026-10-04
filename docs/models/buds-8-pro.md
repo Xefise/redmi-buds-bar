@@ -45,7 +45,7 @@ Bluetooth name, matched as "buds 8 pro" ignoring case and spaces.
 | Transparency `0B 02 xx` | `00` regular, `01` voice, `02` ambient | `00` voice, `01` ambient, `02` regular |
 | Equalizer | presets via `07`, curve via `37` | scenes via `36 01 xx` (standard, music, video, game, audiobooks) |
 | Wearing detection `ANC 02 06 xx` | `00` = enabled | `01` = on |
-| Spatial audio `1D` | `03` off, `0A` Dolby, `0B` Immersive | same |
+| Spatial audio `1D` | `02` off, `03` on (BudsLink); `03` spatial by ear | `03` off, `0A` Dolby, `0B` Immersive |
 
 None of these is settled until a capture shows the phone app sending them; see [state.md](../state.md).
 
@@ -61,4 +61,5 @@ With the third-party table, the user reported on a Mac:
 
 That fits BudsLink's Buds 6 Pro table (`02` off, `03` spatial, `0B` spatial + head tracking): `03` is the
 static spatial mode, and `0B` probably needs head-tracking data from a phone, which a Mac never sends. `0A`
-is unexplained. Next: A/B `02` against `03`.
+is unexplained. The app now offers Off (`02`) / Spatial (`03`); next: confirm by ear that `02` differs from
+`03`.

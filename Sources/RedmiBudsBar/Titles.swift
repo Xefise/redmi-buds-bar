@@ -59,8 +59,7 @@ extension SpatialAudioMode {
     var title: String {
         switch self {
         case .off: tr("Off")
-        case .dolby: tr("Dolby Audio")
-        case .immersive: tr("Immersive")
+        case .spatial: tr("Spatial")
         }
     }
 }

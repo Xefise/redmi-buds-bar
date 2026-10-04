@@ -19,6 +19,9 @@ wrong labels mislead users.
   the last known value.
 - Config codes outside Gadgetbridge's list are requested only from models that declare support.
 
+Applied: the first Buds 8 Pro table (`03` off, `0A` Dolby, `0B` Immersive) turned out wrong by ear; the switch
+was reduced to the values that made an audible difference (Off `02` / Spatial `03`).
+
 ## Consequences
 
 Users can help verify features by sending logs; the UI may show "last chosen" rather than the real mode when

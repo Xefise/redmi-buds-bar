@@ -35,13 +35,12 @@ final class CommandTests: XCTestCase {
                        hex("fedcbac4f30003100002ef") + hex("fedcbac4f3000311000aef"))
     }
 
-    /// Payloads `03 00 1D 03/0A/0B` as published for REDMI Buds 8 Pro.
+    /// Payloads `03 00 1D 02/03` (BudsLink's table; `03` confirmed spatial by ear on Buds 8 Pro).
     func testSpatialAudio() {
         var builder = CommandBuilder(sequence: 7)
-        XCTAssertEqual(builder.encode(.setSpatialAudio(.off)), hex("fedcbac4f2000507" + "03001d03" + "ef"))
-        XCTAssertEqual(builder.encode(.setSpatialAudio(.dolby)), hex("fedcbac4f2000508" + "03001d0a" + "ef"))
-        XCTAssertEqual(builder.encode(.setSpatialAudio(.immersive)), hex("fedcbac4f2000509" + "03001d0b" + "ef"))
-        XCTAssertEqual(builder.encode(.requestConfig([.spatialAudio])), hex("fedcbac4f300030a001def"))
+        XCTAssertEqual(builder.encode(.setSpatialAudio(.off)), hex("fedcbac4f2000507" + "03001d02" + "ef"))
+        XCTAssertEqual(builder.encode(.setSpatialAudio(.spatial)), hex("fedcbac4f2000508" + "03001d03" + "ef"))
+        XCTAssertEqual(builder.encode(.requestConfig([.spatialAudio])), hex("fedcbac4f3000309001def"))
     }
 
     func testEqualizerPresetAndBooleanSettings() {

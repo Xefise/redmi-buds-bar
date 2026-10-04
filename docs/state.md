@@ -19,7 +19,7 @@ _Last updated: 2026-10-05, version 1.1.0 in `VERSION` (tags up to `v1.1.3`)._
 - Connection with SDP lookup, fallback channel, 12 s connect timeout and automatic retry.
 - Battery in panel and menu bar, low battery notification (15 %, 5 % hysteresis).
 - Noise control, equalizer presets and app-defined custom curves, gestures, find earbuds, toggles.
-- Experimental spatial audio switch (Buds 8 Pro only).
+- Experimental spatial audio switch, Off (`02`) / Spatial (`03`) (Buds 8 Pro only).
 - Every earbuds request and notification is acknowledged.
 - English and Spanish UI, switchable at runtime. Launch at login (enabled on first run).
 - CI: build + tests on PRs and `main`; release zip on `v*` tags.
@@ -31,8 +31,8 @@ _Last updated: 2026-10-05, version 1.1.0 in `VERSION` (tags up to `v1.1.3`)._
   different curve layout) differ, and code `0x25` may be in-ear detection rather than adaptive ANC.
 - **Buds 8 Pro spatial audio:** set commands are acknowledged and change the sound, but `GET_CONFIG 0x1D`
   always returns `0x00`, so the app cannot read the current mode; it shows the last mode chosen in the app.
-  By ear, "Off" (`03`) is the only value that sounds spatial; `0A` and `0B` sound unprocessed. The labels are
-  wrong; BudsLink's table (`02` off, `03` on, `0B` on + head tracking) fits better.
+  By ear `03` is the only value that sounds spatial (`0A`, `0B` sound unprocessed), so the switch is now
+  Off (`02`) / Spatial (`03`) per BudsLink's table; `02` itself is not confirmed by ear yet.
 - **One control client at a time (suspected):** while the Mac holds the control channel, the phone app cannot
   configure the earbuds. Quit the Mac app to use the phone app.
 - `VERSION` lags behind the tags (`1.1.0` vs `v1.1.3`), so the zip and `Info.plist` show 1.1.0.
@@ -47,7 +47,7 @@ _Last updated: 2026-10-05, version 1.1.0 in `VERSION` (tags up to `v1.1.3`)._
 
 ## Next steps
 
-1. Relabel Buds 8 Pro spatial audio as Off (`02`) / On (`03`) after an A/B check of `02`.
+1. Confirm by ear that spatial audio Off (`02`) differs from Spatial (`03`) on Buds 8 Pro.
 2. Capture Buds 8 Pro frames while switching each setting in the phone app; fix the 8 Pro value tables.
 3. Add a "release control" action so the phone app can take over without quitting the Mac app.
 4. Ask before enabling launch at login; keep `VERSION` in sync with tags.
