@@ -30,8 +30,8 @@ to a minimal set (battery and noise mode).
 
 REDMI Buds 8 is modelled as the Buds 8 Active capability set plus noise control, which was confirmed on hardware.
 REDMI Buds 8 Pro is assumed to be the Buds 8 set plus the adaptive noise cancelling toggle; this is a guess.
-Unlike the other models it is controlled over the Serial Port channel (usually 28) without the authentication
-handshake: its "MIWEAR" channel does not answer the challenge.
+Unlike the other models it never answers the authentication challenge, so its "MIWEAR" channel (28) is used
+without the handshake. It reports its name as "vela os earbuds"; the Bluetooth name identifies the model.
 It also offers an experimental spatial audio switch (Off / Dolby Audio / Immersive, config `0x1D`). Its values
 come from a third-party Buds 8 Pro capture and are unverified; the raw value reported by the earbuds is logged.
 If you test another model, please open an issue with the result.

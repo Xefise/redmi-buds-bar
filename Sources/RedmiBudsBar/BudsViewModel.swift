@@ -39,8 +39,8 @@ final class BudsViewModel {
     /// Gives up on a connection attempt (channel open + handshake) that never completes.
     private var connectTimeout: Timer?
     private static let connectTimeoutInterval: TimeInterval = 12
-    /// Control channel of the model being connected, fixed when the attempt starts.
-    private var channelKind: BudsModel.ControlChannel = .miwear
+    /// Whether the model being connected uses the handshake, fixed when the attempt starts.
+    private var authenticates = true
     private var connectNotification: IOBluetoothUserNotification?
     private var disconnectNotification: IOBluetoothUserNotification?
     private var observer: NotificationBridge?
@@ -130,9 +130,9 @@ final class BudsViewModel {
         connection = .connecting
         lastError = nil
         session = BudsSession()
-        channelKind = budsModel.controlChannel
+        authenticates = budsModel.requiresAuthentication
         startConnectTimeout()
-        transport.connect(to: device, channel: channelKind)
+        transport.connect(to: device)
     }
 
     private func startConnectTimeout() {
@@ -145,7 +145,7 @@ final class BudsViewModel {
     /// The retry timer starts a new attempt afterwards while the earbuds stay connected.
     private func connectDidTimeOut() {
         guard connection == .connecting else { return }
-        Log.app.error("Connection attempt timed out (channel \(String(describing: self.channelKind), privacy: .public))")
+        Log.app.error("Connection attempt timed out (authentication: \(self.authenticates))")
         transport.disconnect()
         lastError = tr("The earbuds did not respond.")
         connection = .disconnected
@@ -168,7 +168,7 @@ final class BudsViewModel {
         switch event {
         case .opened:
             // Connected at the transport level; the protocol handshake starts now.
-            for frame in session.begin(authenticate: channelKind == .miwear) { send(frame) }
+            for frame in session.begin(authenticate: authenticates) { send(frame) }
         case .data(let bytes):
             Log.protocolLog.debug("RX \(bytes.hexString, privacy: .public)")
             let output = session.receive(bytes)

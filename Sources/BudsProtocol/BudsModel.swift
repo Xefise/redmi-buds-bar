@@ -7,17 +7,10 @@ public struct BudsModel: Equatable, Sendable {
         case generic
     }
 
-    /// How the control channel is reached.
-    public enum ControlChannel: Sendable {
-        /// The "miwear" SDP service, opened with the challenge/response handshake (Gadgetbridge).
-        case miwear
-        /// The plain Serial Port service (UUID 0x1101), used without authentication.
-        case serialPort
-    }
-
     public let id: Identifier
     public let displayName: String
-    public var controlChannel: ControlChannel = .miwear
+    /// Whether the control channel is opened with the challenge/response handshake (Gadgetbridge).
+    public var requiresAuthentication = true
     /// Whether this implementation was verified against real hardware (not just Gadgetbridge's tables).
     public let isTestedOnHardware: Bool
 
@@ -158,10 +151,10 @@ public struct BudsModel: Equatable, Sendable {
 
     /// Not in Gadgetbridge: assumed to be the Buds 8 capability set plus adaptive noise cancelling
     /// (the 5 Pro / 6 Pro toggle) and spatial audio. Untested; the strength pickers only show once the
-    /// earbuds report a value. The "MIWEAR" channel stays silent after our auth challenge, while a working
-    /// Linux client for this model talks to the Serial Port channel (28) without authentication.
+    /// earbuds report a value. The earbuds never answer the auth challenge, but accept
+    /// commands on the "MIWEAR" channel without it (as a working Linux client for this model does).
     private static let buds8Pro = eight(.buds8Pro, "REDMI Buds 8 Pro") {
-        $0.controlChannel = .serialPort
+        $0.requiresAuthentication = false
         $0.ambientSoundModes = AmbientSoundMode.allCases
         $0.noiseCancellingStrengths = [.balanced, .light, .deep]
         $0.transparencyStrengths = TransparencyStrength.allCases

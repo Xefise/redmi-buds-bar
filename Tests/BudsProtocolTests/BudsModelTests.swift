@@ -102,9 +102,9 @@ final class BudsModelCapabilityTests: XCTestCase {
         XCTAssertFalse(pro.isTestedOnHardware)
     }
 
-    func testOnlyBuds8ProUsesSerialPortChannel() {
+    func testOnlyBuds8ProSkipsAuthentication() {
         for model in BudsModel.all + [BudsModel.genericFallback] {
-            XCTAssertEqual(model.controlChannel == .serialPort, model.id == .buds8Pro, "\(model.id)")
+            XCTAssertEqual(model.requiresAuthentication, model.id != .buds8Pro, "\(model.id)")
         }
     }
 

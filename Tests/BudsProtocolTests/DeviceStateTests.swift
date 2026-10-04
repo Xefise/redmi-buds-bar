@@ -91,4 +91,14 @@ final class DeviceStatePhase2Tests: XCTestCase {
         XCTAssertEqual(state.spatialAudio, 0x02)
         XCTAssertNil(SpatialAudioMode(rawValue: 0x02))
     }
+
+    /// Captured from Buds 8 Pro: GET_CONFIG 0x1D returns 0x00 regardless of the mode that was set.
+    func testSpatialAudioZeroIsNotReported() {
+        var state = DeviceState()
+        state.apply(.config([.spatialAudio(0x00)]))
+        XCTAssertNil(state.spatialAudio)
+        state.spatialAudio = SpatialAudioMode.dolby.rawValue
+        state.apply(.config([.spatialAudio(0x00)]))
+        XCTAssertEqual(state.spatialAudio, SpatialAudioMode.dolby.rawValue)
+    }
 }
