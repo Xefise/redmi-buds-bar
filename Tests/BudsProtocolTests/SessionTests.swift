@@ -95,4 +95,16 @@ final class SessionTests: XCTestCase {
         let frames = session.send(.setNoiseMode(.transparency))
         XCTAssertEqual(frames, [hex("fedcbac408000402" + "020402" + "ef")])
     }
+
+    /// Serial Port channel (Buds 8 Pro): no challenge, the info requests go out right away.
+    func testBeginWithoutAuthenticationRequestsInfoImmediately() {
+        var session = makeSession()
+        let frames = session.begin(authenticate: false)
+        XCTAssertEqual(frames.count, 2 + ConfigCode.initialRequests.count)
+        XCTAssertEqual(frames[0], hex("fedcbac402000500ffffffffef"))
+        XCTAssertEqual(frames[1], hex("fedcbac409000501ffffffffef"))
+        XCTAssertFalse(frames.contains { $0[4] == Opcode.authChallenge.code })
+        let out = session.receive(hex(Fixture.deviceInfoResponse))
+        XCTAssertTrue(out.events.contains { if case .deviceInfo = $0 { true } else { false } })
+    }
 }

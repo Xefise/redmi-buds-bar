@@ -32,6 +32,11 @@ final class BudsViewModel {
     private let transport = RFCOMMTransport()
     private var session = BudsSession()
     private var retryTimer: Timer?
+    /// Gives up on a connection attempt (channel open + handshake) that never completes.
+    private var connectTimeout: Timer?
+    private static let connectTimeoutInterval: TimeInterval = 12
+    /// Control channel of the model being connected, fixed when the attempt starts.
+    private var channelKind: BudsModel.ControlChannel = .miwear
     private var connectNotification: IOBluetoothUserNotification?
     private var disconnectNotification: IOBluetoothUserNotification?
     private var observer: NotificationBridge?
@@ -121,7 +126,32 @@ final class BudsViewModel {
         connection = .connecting
         lastError = nil
         session = BudsSession()
-        transport.connect(to: device)
+        channelKind = budsModel.controlChannel
+        startConnectTimeout()
+        transport.connect(to: device, channel: channelKind)
+    }
+
+    private func startConnectTimeout() {
+        connectTimeout?.invalidate()
+        connectTimeout = Timer.scheduledTimer(withTimeInterval: Self.connectTimeoutInterval, repeats: false) { [weak self] _ in
+            onMain { self?.connectDidTimeOut() }
+        }
+    }
+
+    /// The retry timer starts a new attempt afterwards while the earbuds stay connected.
+    private func connectDidTimeOut() {
+        guard connection == .connecting else { return }
+        Log.app.error("Connection attempt timed out (channel \(String(describing: self.channelKind), privacy: .public))")
+        transport.disconnect()
+        lastError = tr("The earbuds did not respond.")
+        connection = .disconnected
+    }
+
+    private func markConnected() {
+        connectTimeout?.invalidate()
+        guard connection != .connected else { return }
+        connection = .connected
+        requestModelSpecificConfig()
     }
 
     private func observeDisconnect(of device: IOBluetoothDevice) {
@@ -134,16 +164,18 @@ final class BudsViewModel {
         switch event {
         case .opened:
             // Connected at the transport level; the protocol handshake starts now.
-            for frame in session.begin() { send(frame) }
+            for frame in session.begin(authenticate: channelKind == .miwear) { send(frame) }
         case .data(let bytes):
             Log.protocolLog.debug("RX \(bytes.hexString, privacy: .public)")
             let output = session.receive(bytes)
             for frame in output.outgoing { send(frame) }
             for event in output.events { apply(event) }
         case .closed:
+            connectTimeout?.invalidate()
             connection = .disconnected
             findingTarget = nil
         case .failed(let message):
+            connectTimeout?.invalidate()
             lastError = message
             connection = .disconnected
         }
@@ -152,9 +184,8 @@ final class BudsViewModel {
     private func apply(_ event: BudsEvent) {
         switch event {
         case .authenticated:
-            connection = .connected
             Log.protocolLog.info("Authenticated")
-            requestModelSpecificConfig()
+            markConnected()
         case .unhandled(let message):
             Log.protocolLog.notice("Unhandled frame: \(message.encode().hexString, privacy: .public)")
         case .status(let updates):
@@ -171,7 +202,7 @@ final class BudsViewModel {
             break
         }
         state.apply(event)
-        if case .deviceInfo = event, connection != .connected { connection = .connected }
+        if case .deviceInfo = event { markConnected() }
         if case .config(let updates) = event {
             for case .earbudsPosition(let flags) in updates {
                 Log.protocolLog.info("Earbuds position flags: \(flags.rawValue, format: .hex)")
