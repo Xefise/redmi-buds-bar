@@ -51,7 +51,14 @@ None of these is settled until a capture shows the phone app sending them; see [
 
 ## Spatial audio by ear (2026-10-05)
 
-With the third-party table, the user reported: "Off" (`03`) sounds spatial, like Dolby, with a slight delay;
-"Dolby" (`0A`) sounds like no processing. That fits BudsLink's Buds 6 Pro table better (`02` off, `03`
-spatial, `0B` spatial + head tracking), where `03` means "on". Unconfirmed: needs an A/B test with `02` or a
-capture of the phone app.
+With the third-party table, the user reported on a Mac:
+
+| Sent | Label in app | Heard |
+| --- | --- | --- |
+| `03` | Off | Spatial, Dolby-like, slight delay |
+| `0A` | Dolby Audio | Like no processing |
+| `0B` | Immersive | Identical to `0A`, no change |
+
+That fits BudsLink's Buds 6 Pro table (`02` off, `03` spatial, `0B` spatial + head tracking): `03` is the
+static spatial mode, and `0B` probably needs head-tracking data from a phone, which a Mac never sends. `0A`
+is unexplained. Next: A/B `02` against `03`.

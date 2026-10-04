@@ -31,8 +31,8 @@ _Last updated: 2026-10-05, version 1.1.0 in `VERSION` (tags up to `v1.1.3`)._
   different curve layout) differ, and code `0x25` may be in-ear detection rather than adaptive ANC.
 - **Buds 8 Pro spatial audio:** set commands are acknowledged and change the sound, but `GET_CONFIG 0x1D`
   always returns `0x00`, so the app cannot read the current mode; it shows the last mode chosen in the app.
-  By ear, "Off" (`03`) sounds spatial and "Dolby" (`0A`) sounds off, so the labels are probably wrong
-  (BudsLink: `02` off, `03` on, `0B` on + head tracking).
+  By ear, "Off" (`03`) is the only value that sounds spatial; `0A` and `0B` sound unprocessed. The labels are
+  wrong; BudsLink's table (`02` off, `03` on, `0B` on + head tracking) fits better.
 - **One control client at a time (suspected):** while the Mac holds the control channel, the phone app cannot
   configure the earbuds. Quit the Mac app to use the phone app.
 - `VERSION` lags behind the tags (`1.1.0` vs `v1.1.3`), so the zip and `Info.plist` show 1.1.0.
@@ -47,6 +47,7 @@ _Last updated: 2026-10-05, version 1.1.0 in `VERSION` (tags up to `v1.1.3`)._
 
 ## Next steps
 
-1. Capture Buds 8 Pro frames while switching each setting in the phone app; fix the 8 Pro value tables.
-2. Add a "release control" action so the phone app can take over without quitting the Mac app.
-3. Ask before enabling launch at login; keep `VERSION` in sync with tags.
+1. Relabel Buds 8 Pro spatial audio as Off (`02`) / On (`03`) after an A/B check of `02`.
+2. Capture Buds 8 Pro frames while switching each setting in the phone app; fix the 8 Pro value tables.
+3. Add a "release control" action so the phone app can take over without quitting the Mac app.
+4. Ask before enabling launch at login; keep `VERSION` in sync with tags.
