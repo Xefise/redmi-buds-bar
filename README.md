@@ -92,6 +92,8 @@ The version comes from the `VERSION` file. `build-app.sh` writes it into `Info.p
   capabilities). `Sources/RedmiBudsBar` contains the IOBluetooth transport, view model and SwiftUI views.
   Tests use frames captured from a real REDMI Buds 8 as fixtures.
 
+Details: [docs/nav.md](docs/nav.md) (goal, current state, decisions, protocol notes per model).
+
 ## Troubleshooting
 
 - **Nothing happens / "Disconnected":** the earbuds must be connected to the Mac (for example as the audio
